@@ -7,7 +7,7 @@
 <template>
   <figure class="Logo">
     <svg version="1.1" id="Logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-       viewBox="0 0 470 470" style="enable-background:new 0 0 470 470;" xml:space="preserve" width="100px" height="100px">
+       viewBox="0 0 470 470" style="enable-background:new 0 0 470 470;" xml:space="preserve" :width="size" :height="size">
       <g>
         <path d="M118.839,309.106c1.919,0,3.839-0.732,5.304-2.197l136.376-136.376c2.929-2.929,2.929-7.678,0-10.606
           c-2.932-2.93-7.68-2.929-10.607,0L113.536,296.303c-2.929,2.929-2.929,7.678,0,10.606C115,308.374,116.92,309.106,118.839,309.106z
@@ -45,3 +45,17 @@
     </svg>
   </figure>
 </template>
+
+<script>
+  export default {
+    props: [
+      'size'
+    ],
+    
+    data() {
+      return {
+        size: '100px'
+      }
+    }
+  }
+</script>

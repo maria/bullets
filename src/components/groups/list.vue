@@ -58,7 +58,8 @@
 </style>
 
 <!-- component template -->
-<template id="list">
+<template>
+  <h1>Your groups</h1>
   <table>
     <thead>
       <tr>
