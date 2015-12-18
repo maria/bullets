@@ -1,7 +1,7 @@
 import json
 
 import ldap
-from flask import Flask, json, request, session, redirect, make_response
+from flask import Flask, json, request, session, redirect, make_response, g
 from flask.ext.mongoengine import MongoEngine
 from flask_restful import Resource, Api, reqparse
 
@@ -38,7 +38,7 @@ class Entry(db.Document):
 class PersonResource(Resource):
     def get(self, person_id):
         data_object = Person.objects.get_or_404(id=person_id)
-        return json.loads(data_object.to_json())
+        return raw_object(data_object)
 
 
 class PersonsResource(Resource):
@@ -65,7 +65,7 @@ class PersonsResource(Resource):
 class GroupResource(Resource):
     def get(self, group_id):
         data_object = Group.objects.get_or_404(id=group_id)
-        return json.loads(data_object.to_json())
+        return raw_object(data_object)
 
 
 class GroupsResource(Resource):
@@ -89,7 +89,7 @@ class GroupsResource(Resource):
 class EntryResource(Resource):
     def get(self, entry_id):
         data_object = Entry.objects.get_or_404(id=entry_id)
-        return json.loads(data_object.to_json())
+        return raw_object(data_object)
 
 
 class EntriesResource(Resource):
@@ -117,20 +117,21 @@ class EntriesResource(Resource):
         return {'entry_id': entry_id}
 
 
+def raw_object(data_object):
+    data = json.loads(data_object.to_json())
+    data['id'] = data['_id']['$oid']
+    data.pop('_id')
+    return data
+
+
 def raw_data(data_objects):
     raw_data = []
-    print data_objects
     for data in data_objects:
-        raw_data.append(json.loads(data.to_json()))
+        data = json.loads(data.to_json())
+        data['id'] = data['_id']['$oid']
+        data.pop('_id')
+        raw_data.append(data)
     return raw_data
-
-
-api.add_resource(PersonResource, '/person/<person_id>')
-api.add_resource(PersonsResource, '/person/')
-api.add_resource(GroupResource, '/group/<group_id>')
-api.add_resource(GroupsResource, '/group/')
-api.add_resource(EntryResource, '/entry/<entry_id>')
-api.add_resource(EntriesResource, '/entry/')
 
 ## LDAP
 def get_ldap_client():
@@ -186,6 +187,13 @@ def logout():
         session.pop('username', None)
     return redirect('/')
 
+
+api.add_resource(PersonResource, '/person/<person_id>')
+api.add_resource(PersonsResource, '/person/')
+api.add_resource(GroupResource, '/group/<group_id>')
+api.add_resource(GroupsResource, '/group/')
+api.add_resource(EntryResource, '/entry/<entry_id>')
+api.add_resource(EntriesResource, '/entry/')
 
 if __name__ == '__main__':
     app.run(host=HOST)
