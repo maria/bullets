@@ -1,15 +1,15 @@
 <template>
-  <h1>Your groups</h1>
-  <div id="demo">
+  <h1 class="uMB-30">Your groups</h1>
   <form id="search">
-    Search <input name="query" v-model="searchQuery">
+    <div class="form-group">
+      <input name="query" v-model="searchQuery" class="form-control" placeholder="Search for a group">
+    </div>
   </form>
   <listingtable
     :data="gridData"
     :columns="gridColumns"
     :filter-key="searchQuery">
   </listingtable>
-</div>
 </template>
 
 <script>
@@ -22,12 +22,12 @@
       return {
         groups: null,
         searchQuery: '',
-        gridColumns: ['name', 'power'],
+        gridColumns: ['name'],
         gridData: [
-          { name: 'Chuck Norris', power: Infinity },
-          { name: 'Bruce Lee', power: 9000 },
-          { name: 'Jackie Chan', power: 7000 },
-          { name: 'Jet Li', power: 8000 }
+          { name: 'Chuck Norris' },
+          { name: 'Bruce Lee' },
+          { name: 'Jackie Chan' },
+          { name: 'Jet Li' }
         ]
       }
     },

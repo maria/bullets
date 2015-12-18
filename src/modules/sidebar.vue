@@ -1,12 +1,25 @@
+<style scoped>
+  .panel-body {
+    text-align: center;
+  }
+
+  figure {
+    margin: 40px;
+  }
+</style>
+
 <template>
-  <div class="col-md-4">
-    <logo></logo>
-    <h3>Hello, {{ user }}!</h3>
-    <a href="#" v-show="isLoggedIn">Logout</a>
-    <ul>
-      <li><a v-link="{ path: '/groups' }">Groups</a></li>
-      <li><a v-link="{ path: '/about' }">About</a></li>
-    </ul>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <logo></logo>
+      <h3>Hello, {{ user }}!</h3>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a v-link="{ name: 'groups' }">Groups</a></li>
+        <li><a v-link="{ name: 'about' }">About</a></li>
+        <li>&nbsp;</li>
+        <li><a href="#" v-show="isLoggedIn">Logout</a></li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -14,6 +27,7 @@
   import logo from './logo.vue'
 
   export default {
+    replace: false,
     data() {
       return {
         user: ''
