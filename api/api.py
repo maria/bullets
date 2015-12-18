@@ -10,7 +10,7 @@ app.config['MONGODB_SETTINGS'] = MONGODB_SETTINGS
 db.init_app(app)
 api = Api(app)
 
-class User(db.Document):
+class Person(db.Document):
     name = db.StringField(max_length=70)
     email = db.EmailField(required=True)
     role = db.StringField(max_length=50, required=True, default='User')
@@ -26,9 +26,9 @@ class Entry(db.Document):
     username = db.StringField(max_length=50)
     info = db.StringField()
 
-class UserResource(Resource):
+class PersonResource(Resource):
     def get(self):
-        users = User.objects
+        users = Person.objects
         raw_data = []
         for data in users:
             raw_data.append(data.to_json())
@@ -38,7 +38,7 @@ class HelloResource(Resource):
     def get(self):
         return {'name': 'bullets'}
 
-api.add_resource(UserResource, '/user/')
+api.add_resource(PersonResource, '/person/')
 api.add_resource(HelloResource, '/')
 
 if __name__ == '__main__':
