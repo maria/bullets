@@ -1,10 +1,16 @@
 export function configRouter (router) {
+  router.redirect({
+    '/': '/groups'
+  })
+
   router.map({
     '/about': {
+      name: 'about',
       component: require('./components/about.vue')
     },
 
     '/groups': {
+      name: 'groups',
       component: require('./components/groups/list.vue')
     },
 
