@@ -3,12 +3,8 @@ import json
 import ldap
 from flask import Flask, json, request, session, redirect, make_response, g
 from flask.ext.mongoengine import MongoEngine
-<<<<<<< HEAD
 from flask_restful import Resource, Api
-=======
-from flask_restful import Resource, Api, reqparse
 from cryptography.fernet import Fernet
->>>>>>> 2c1a6ea75f5da90b9a5ee3b37b4f181b5e546e01
 
 from config import HOST, MONGODB_SETTINGS, LDAP_HOST, APP_SECRET_KEY, ENCRYPTION_KEY
 
