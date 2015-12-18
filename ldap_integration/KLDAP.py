@@ -1,7 +1,5 @@
-from flask import Flask
 import ldap
-from flask import g
-from flask import request
+from flask import g, request, session, Flask, redirect
 from flask import make_response
 import os
 import yaml
@@ -13,6 +11,7 @@ app.debug = True
 
 with open(os.path.join(BASE_DIR, '../config/app.yml'), 'r') as config_file:
     config_params = yaml.load(config_file)
+    app.secret_key = config_params['APP_SECRET_KEY']
 
 
 def get_ldap_client():
@@ -24,25 +23,47 @@ def get_ldap_client():
 
 
 def init_ldap_client(config):
-    ldap_client = ldap.initialize(config["LDAP_HOST"])
+    ldap_client = ldap.initialize(config['LDAP_HOST'])
     return ldap_client
 
 
+@app.route('/')
+def index():
+    if 'username' not in session:
+        return redirect('login')
+    return '''<span> Success </span>'''
+
+
 @app.route('/login', methods=['GET', 'POST'])
-def ldap_login():
+def login():
     if request.method == 'POST':
         form = request.form
-        if "username" not in form or "password" not in form:
-            return make_response(("", 401, {}))
-        username = form["username"]
-        password = form["password"]
+        if 'username' not in form or 'password' not in form:
+            return make_response(('', 400, {}))
+        username = form['username']
+        password = form['password']
 
         try:
             ldap_client = get_ldap_client()
             ldap_client.bind_s(username, password)
-            return make_response(("", 200, {}))
+            session['username'] = username
+            return redirect('/')
         except BaseException:
-            return make_response(("", 401, {}))
+            return make_response(('', 401, {}))
+    return '''
+        <form action="" method="post">
+            <p><input type=text name=username>
+            <p><input type=password name=password>
+            <p><input type=submit value=Login>
+        </form>
+    '''
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    if 'username' in session:
+        session.pop('username', None)
+    return redirect('/')
 
 
 if __name__ == '__main__':
