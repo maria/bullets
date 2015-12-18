@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import app from './app.vue'
+import login from './login.vue'
 import VueRouter from 'vue-router'
 import { configRouter } from './route-config'
 
@@ -19,7 +20,7 @@ const router = new VueRouter({
 // configure router
 configRouter(router)
 
-const App = Vue.extend(app)
+const App = Vue.extend(login)
 
 router.start(App, 'body')
 
