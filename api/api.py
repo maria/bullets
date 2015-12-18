@@ -82,6 +82,8 @@ def login():
         username = form['username']
         password = form['password']
 
+        username = username.replace('@kalon.ro', '@ad.kalon.ro')
+
         try:
             ldap_client = get_ldap_client()
             ldap_client.bind_s(username, password)
