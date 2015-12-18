@@ -33,6 +33,7 @@ class Entry(db.Document):
     secret = db.StringField(required=True)
     username = db.StringField(max_length=50)
     info = db.StringField()
+    group = db.StringField()
 
 
 class PersonResource(Resource):
@@ -51,15 +52,17 @@ class PersonsResource(Resource):
         parser.add_argument('name', type=str)
         parser.add_argument('email', type=str)
         parser.add_argument('role', type=str)
+        parser.add_argument('groups', type=list)
         args = parser.parse_args()
 
         try:
-            person_id = Person(
-                name=args['name'], role=args['role'], email=args['email']).save()
+            person = Person(
+                name=args['name'], role=args['role'], email=args['email'],
+                groups=args['groups']).save()
         except Exception as e:
             return {'message': "Error: {0}".format(e)}
 
-        return {'person_id': person_id}
+        return raw_object(person)
 
 
 class GroupResource(Resource):
@@ -79,11 +82,11 @@ class GroupsResource(Resource):
         args = parser.parse_args()
 
         try:
-            group_id = Group(name=args['name'], type=args['type']).save()
+            group = Group(name=args['name'], type=args['type']).save()
         except Exception as e:
             return {'message': "Error: {0}".format(e)}
 
-        return {'group_id': group_id}
+        return raw_object(group)
 
 
 class EntryResource(Resource):
@@ -101,20 +104,18 @@ class EntriesResource(Resource):
         parser.add_argument('name', type=str)
         parser.add_argument('secret', type=str)
         parser.add_argument('info', type=str)
-        parser.add_argument('groups', type=str)
+        parser.add_argument('group', type=str)
         args = parser.parse_args()
 
-        groups = args['groups'].split(',')
-
         try:
-            entry_id = Entry(
+            entry = Entry(
                 name=args['name'], secret=args['secret'],
-                info=args['info'], groups=groups).save()
+                group=args['group'], info=args.get('info')).save()
 
         except Exception as e:
             return {'message': "Error: {0}".format(e)}
 
-        return {'entry_id': entry_id}
+        return raw_object(entry)
 
 
 def raw_object(data_object):
@@ -196,4 +197,4 @@ api.add_resource(EntryResource, '/entry/<entry_id>')
 api.add_resource(EntriesResource, '/entry/')
 
 if __name__ == '__main__':
-    app.run(host=HOST)
+    app.run(host=HOST, debug=True)
