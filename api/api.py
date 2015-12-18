@@ -99,7 +99,7 @@ def login():
     '''
 
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route('/logout', methods=['DELETE'])
 def logout():
     if 'username' in session:
         session.pop('username', None)
