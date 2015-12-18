@@ -3,7 +3,7 @@ import json
 import ldap
 from flask import Flask, json, request, session, redirect, make_response, g
 from flask.ext.mongoengine import MongoEngine
-from flask_restful import Resource, Api, reqparse
+from flask_restful import Resource, Api
 
 from config import HOST, MONGODB_SETTINGS, LDAP_HOST, APP_SECRET_KEY
 
@@ -13,7 +13,6 @@ app.config['MONGODB_SETTINGS'] = MONGODB_SETTINGS
 app.secret_key = APP_SECRET_KEY
 db.init_app(app)
 api = Api(app)
-parser = reqparse.RequestParser()
 
 
 class Person(db.Document):
@@ -49,12 +48,7 @@ class PersonsResource(Resource):
         return raw_data(data_objects)
 
     def post(self):
-        parser.add_argument('name', type=str)
-        parser.add_argument('email', type=str)
-        parser.add_argument('role', type=str)
-        parser.add_argument('groups', type=list)
-        args = parser.parse_args()
-
+        args = json.loads(request.data)
         try:
             person = Person(
                 name=args['name'], role=args['role'], email=args['email'],
@@ -77,9 +71,7 @@ class GroupsResource(Resource):
         return raw_data(data_objects)
 
     def post(self):
-        parser.add_argument('name', type=str)
-        parser.add_argument('type', type=str)
-        args = parser.parse_args()
+        args = json.loads(request.data)
 
         try:
             group = Group(name=args['name'], type=args['type']).save()
@@ -101,11 +93,7 @@ class EntriesResource(Resource):
         return raw_data(data_objects)
 
     def post(self):
-        parser.add_argument('name', type=str)
-        parser.add_argument('secret', type=str)
-        parser.add_argument('info', type=str)
-        parser.add_argument('group', type=str)
-        args = parser.parse_args()
+        args = json.loads(request.data)
 
         try:
             entry = Entry(
@@ -197,4 +185,4 @@ api.add_resource(EntryResource, '/entry/<entry_id>')
 api.add_resource(EntriesResource, '/entry/')
 
 if __name__ == '__main__':
-    app.run(host=HOST, debug=True)
+    app.run(host=HOST)
