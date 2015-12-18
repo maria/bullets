@@ -4,8 +4,9 @@ import ldap
 from flask import Flask, json, request, session, redirect, make_response, g
 from flask.ext.mongoengine import MongoEngine
 from flask_restful import Resource, Api, reqparse
+from cryptography.fernet import Fernet
 
-from config import HOST, MONGODB_SETTINGS, LDAP_HOST, APP_SECRET_KEY
+from config import HOST, MONGODB_SETTINGS, LDAP_HOST, APP_SECRET_KEY, ENCRYPTION_KEY
 
 db = MongoEngine()
 app = Flask('Bullets')
@@ -14,6 +15,8 @@ app.secret_key = APP_SECRET_KEY
 db.init_app(app)
 api = Api(app)
 parser = reqparse.RequestParser()
+# aes = AES.new(ENCRYPTION_KEY, AES.MODE_CBC, 'This is an IV456')
+cipher_suite = Fernet(ENCRYPTION_KEY)
 
 
 class Person(db.Document):
@@ -43,7 +46,6 @@ class PersonResource(Resource):
 
 
 class PersonsResource(Resource):
-
     def get(self):
         data_objects = Person.objects
         return raw_data(data_objects)
@@ -57,8 +59,8 @@ class PersonsResource(Resource):
 
         try:
             person = Person(
-                name=args['name'], role=args['role'], email=args['email'],
-                groups=args['groups']).save()
+                    name=args['name'], role=args['role'], email=args['email'],
+                    groups=args['groups']).save()
         except Exception as e:
             return {'message': "Error: {0}".format(e)}
 
@@ -92,6 +94,7 @@ class GroupsResource(Resource):
 class EntryResource(Resource):
     def get(self, entry_id):
         data_object = Entry.objects.get_or_404(id=entry_id)
+        data_object.secret = cipher_suite.decrypt(bytes(data_object.secret))
         return raw_object(data_object)
 
 
@@ -106,11 +109,12 @@ class EntriesResource(Resource):
         parser.add_argument('info', type=str)
         parser.add_argument('group', type=str)
         args = parser.parse_args()
+        encrypted_secret = cipher_suite.encrypt(args['secret'])
 
         try:
             entry = Entry(
-                name=args['name'], secret=args['secret'],
-                group=args['group'], info=args.get('info')).save()
+                    name=args['name'], secret=encrypted_secret,
+                    group=args['group'], info=args.get('info')).save()
 
         except Exception as e:
             return {'message': "Error: {0}".format(e)}
@@ -133,6 +137,7 @@ def raw_data(data_objects):
         data.pop('_id')
         raw_data.append(data)
     return raw_data
+
 
 ## LDAP
 def get_ldap_client():
