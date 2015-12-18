@@ -17,9 +17,11 @@ class Person(db.Document):
     role = db.StringField(max_length=50, required=True, default='User')
     groups = db.ListField()
 
+
 class Group(db.Document):
     name = db.StringField(max_length=70, required=True)
     type = db.StringField(max_length=70, required=True)
+
 
 class Entry(db.Document):
     name = db.StringField(max_length=70, required=True)
@@ -27,10 +29,6 @@ class Entry(db.Document):
     username = db.StringField(max_length=50)
     info = db.StringField()
 
-parser = reqparse.RequestParser()
-parser.add_argument('name')
-parser.add_argument('email', action='append')
-parser.add_argument('role', action='append')
 
 class PersonResource(Resource):
 
@@ -39,7 +37,11 @@ class PersonResource(Resource):
         return raw_data(data_objects)
 
     def post(self):
+        parser.add_argument('name', type=str)
+        parser.add_argument('email', type=str)
+        parser.add_argument('role', type=str)
         args = parser.parse_args()
+
         try:
             person_id = Person(
                 name=args['name'], role=args['role'], email=args['email']).save()
@@ -48,18 +50,49 @@ class PersonResource(Resource):
 
         return {'message': 'OK'}
 
+
 class GroupResource(Resource):
     def get(self):
         data_objects = Group.objects
         return raw_data(data_objects)
 
     def post(self):
-        pass
+        parser.add_argument('name', type=str)
+        parser.add_argument('type', type=str)
+        args = parser.parse_args()
+
+        try:
+            group_id = Group(name=args['name'], type=args['type']).save()
+        except Exception as e:
+            return {'message': "Error: {0}".format(e)}
+
+        return {'message': 'OK'}
+
 
 class EntryResource(Resource):
     def get(self):
         data_objects = Entry.objects
         return raw_data(data_objects)
+
+    def post(self):
+        parser.add_argument('name', type=str)
+        parser.add_argument('secret', type=str)
+        parser.add_argument('info', type=str)
+        parser.add_argument('groups', type=str)
+        args = parser.parse_args()
+
+        groups = args['groups'].split(',')
+
+        try:
+            entry_id = Entry(
+                name=args['name'], secret=args['secret'],
+                info=args['info'], groups=groups).save()
+
+        except Exception as e:
+            return {'message': "Error: {0}".format(e)}
+
+        return {'message': 'OK'}
+
 
 class HelloResource(Resource):
     def get(self):
