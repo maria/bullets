@@ -1,14 +1,16 @@
 import json
 
-from flask import Flask, json
+import ldap
+from flask import Flask, json, request, session, redirect, make_response
 from flask.ext.mongoengine import MongoEngine
 from flask_restful import Resource, Api, reqparse
 
-from config import HOST, MONGODB_SETTINGS
+from config import HOST, MONGODB_SETTINGS, LDAP_HOST, APP_SECRET_KEY
 
 db = MongoEngine()
 app = Flask('Bullets')
 app.config['MONGODB_SETTINGS'] = MONGODB_SETTINGS
+app.secret_key = APP_SECRET_KEY
 db.init_app(app)
 api = Api(app)
 parser = reqparse.RequestParser()
@@ -129,6 +131,60 @@ api.add_resource(GroupResource, '/group/<group_id>')
 api.add_resource(GroupsResource, '/group/')
 api.add_resource(EntryResource, '/entry/<entry_id>')
 api.add_resource(EntriesResource, '/entry/')
+
+## LDAP
+def get_ldap_client():
+    ldap_client = getattr(g, '_ldap_client', None)
+    if ldap_client is None:
+        ldap_client = g._ldap_client = init_ldap_client()
+        ldap_client.set_option(ldap.OPT_REFERRALS, 0)
+    return ldap_client
+
+
+def init_ldap_client():
+    ldap_client = ldap.initialize(LDAP_HOST)
+    return ldap_client
+
+
+@app.route('/')
+def index():
+    if 'username' not in session:
+        return redirect('login')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        form = request.form
+        if 'username' not in form or 'password' not in form:
+            return make_response(('', 400, {}))
+        username = form['username']
+        password = form['password']
+
+        username = username.replace('@kalon.ro', '@ad.kalon.ro')
+
+        try:
+            ldap_client = get_ldap_client()
+            ldap_client.bind_s(username, password)
+            session.pop('username', None)
+            session['username'] = username
+            return redirect('/')
+        except BaseException:
+            return make_response(('', 401, {}))
+    return '''
+        <form action="" method="post">
+            <p><input type=text name=username>
+            <p><input type=password name=password>
+            <p><input type=submit value=Login>
+        </form>
+    '''
+
+
+@app.route('/logout', methods=['DELETE'])
+def logout():
+    if 'username' in session:
+        session.pop('username', None)
+    return redirect('/')
 
 
 if __name__ == '__main__':

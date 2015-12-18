@@ -1,2 +1,2 @@
 *.pyc
-api/config_local.py
+api/config.py
