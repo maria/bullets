@@ -4,3 +4,7 @@ node_modules
 *.log
 *.pyc
 api/config.py
+build
+.eslintrc
+.editorconfig
+.babelrc
