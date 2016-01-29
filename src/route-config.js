@@ -21,7 +21,6 @@ export function configRouter (router) {
         'people': {
           component: require('./components/groups/item-people.vue')
         },
-
         // matches /groups/:groupId/passwords
         'passwords': {
           component: require('./components/groups/item-passwords.vue')

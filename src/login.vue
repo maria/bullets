@@ -37,7 +37,6 @@
 
     methods: {
       attemptLogin: () => {
-        console.log('wat.');
       }
     },
 

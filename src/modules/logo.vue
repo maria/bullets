@@ -48,14 +48,17 @@
 
 <script>
   export default {
-    props: [
-      'size'
-    ],
-
-    data() {
-      return {
-        size: '100px'
+    props: {
+      size: {
+        type: String,
+        default: '100px',
       }
-    }
+    },
+
+    //data() {
+      //return {
+        //size: '100px'
+      //}
+    //}
   }
 </script>
