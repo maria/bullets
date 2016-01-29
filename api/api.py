@@ -2,6 +2,7 @@ import json
 
 import ldap
 from flask import Flask, json, request, session, redirect, make_response, g
+from flask.ext.cors import CORS
 from flask.ext.mongoengine import MongoEngine
 from flask_restful import Resource, Api
 from cryptography.fernet import Fernet
@@ -183,11 +184,12 @@ def logout():
 
 
 api.add_resource(PersonResource, '/person/<person_id>')
-api.add_resource(PersonsResource, '/person/')
+api.add_resource(PersonsResource, '/persons')
 api.add_resource(GroupResource, '/group/<group_id>')
-api.add_resource(GroupsResource, '/group/')
+api.add_resource(GroupsResource, '/groups')
 api.add_resource(EntryResource, '/entry/<entry_id>')
-api.add_resource(EntriesResource, '/entry/')
+api.add_resource(EntriesResource, '/entries')
 
 if __name__ == '__main__':
-    app.run(host=HOST)
+    cors = CORS(app, resources={r"*": {"origins": "*"}})
+    app.run(host=HOST, debug=True)

@@ -4,6 +4,6 @@ MONGODB_SETTINGS = {
     'host': 'localhost'
 }
 
-LDAP_HOST =
-APP_SECRET_KEY =
-ENCRYPTION_KEY =
+LDAP_HOST = ''
+APP_SECRET_KEY = ''
+ENCRYPTION_KEY = ''
