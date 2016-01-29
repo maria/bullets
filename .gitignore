@@ -7,4 +7,3 @@ api/config.py
 build
 .eslintrc
 .editorconfig
-.babelrc
