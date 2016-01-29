@@ -23,12 +23,7 @@
         groups: null,
         searchQuery: '',
         gridColumns: ['name'],
-        gridData: [
-          { name: 'Chuck Norris' },
-          { name: 'Bruce Lee' },
-          { name: 'Jackie Chan' },
-          { name: 'Jet Li' }
-        ]
+        gridData: []
       }
     },
 
@@ -42,13 +37,12 @@
 
     methods: {
       fetchData: function() {
-        var xhr = new XMLHttpRequest()
-        var self = this
-        xhr.open('GET', apiURL + self.currentBranch)
-        xhr.onload = function () {
-          self.groups = JSON.parse(xhr.responseText)
-        }
-        xhr.send()
+        this.$http.get('http://192.168.1.11:5000/groups/').then(
+          function (response) {
+            this.gridData = response.data;
+          }, function (response) {
+            this.gridData = [];
+        });
       }
     }
   }
