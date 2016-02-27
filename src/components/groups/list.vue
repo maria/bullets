@@ -13,9 +13,8 @@
 </template>
 
 <script>
-  const apiURL = '';
-
   import listingtable from '../../modules/listing-table.vue'
+  import settings from '../../settings.js'
 
   export default {
     data() {
@@ -37,7 +36,7 @@
 
     methods: {
       fetchData: function() {
-        this.$http.get('http://192.168.1.11:5000/groups/').then(
+        this.$http.get(settings.apiURL + '/groups').then(
           function (response) {
             this.gridData = response.data;
           }, function (response) {

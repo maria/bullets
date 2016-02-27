@@ -36,7 +36,6 @@
 
     methods: {
       isLoggedIn: () => {
-        console.log('woot.');
       }
     },
 
