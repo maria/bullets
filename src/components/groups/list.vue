@@ -19,6 +19,10 @@
   export default {
     name: 'groups-list',
 
+    components: {
+      ListingTable
+    },
+
     data() {
       return {
         groups: null,
@@ -28,21 +32,18 @@
       }
     },
 
-    created: function () {
+    created() {
       this.fetchData()
     },
 
-    components: {
-      ListingTable
-    },
-
     methods: {
-      fetchData: function() {
-        this.$http.get(`${apiURL}/groups`).then(
-          function (response) {
-            this.gridData = response.data;
-          }, function (response) {
-            this.gridData = [];
+      fetchData() {
+        this.$http.get(`${apiURL}/groups`)
+        .then((response) => {
+          this.gridData = response.data;
+        })
+        .catch(() => {
+          return 'Fetch failed';
         });
       }
     }
