@@ -13,8 +13,8 @@
 </template>
 
 <script>
-  import ListingTable from '../../modules/listing-table.vue'
-  import Settings from '../../settings.js'
+  import ListingTable from '../../modules/listing-table.vue';
+  import {apiURL} from '../../settings.js';
 
   export default {
     name: 'groups-list',
@@ -38,7 +38,7 @@
 
     methods: {
       fetchData: function() {
-        this.$http.get(Settings.apiURL + '/groups').then(
+        this.$http.get(`${apiURL}/groups`).then(
           function (response) {
             this.gridData = response.data;
           }, function (response) {
