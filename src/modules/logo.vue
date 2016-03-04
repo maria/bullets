@@ -53,12 +53,6 @@
         type: String,
         default: '100px',
       }
-    },
-
-    //data() {
-      //return {
-        //size: '100px'
-      //}
-    //}
+    }
   }
 </script>
