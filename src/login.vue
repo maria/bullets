@@ -10,41 +10,49 @@
     <div class="row">
       <div class="col-md-4 col-md-offset-4">
         <div class="form-group">
-          <input type="text" v-model="login.username" placeholder="username" class="form-control input-lg" />
+          <input type="text" v-model="loginData.username" placeholder="username" class="form-control input-lg" />
         </div>
         <div class="form-group">
-          <input type="password" v-model="login.password" placeholder="password" class="form-control input-lg" />
+          <input type="password" v-model="loginData.password" placeholder="password" class="form-control input-lg" />
         </div>
-        <button type="submit" v-on:click="attemptLogin" name="loginSubmit" class="btn btn-primary btn-block btn-lg">Login</button>
+        <button type="submit" @click="attemptLogin" name="loginSubmit" class="btn btn-primary btn-block btn-lg">Login</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import Logo from './modules/logo.vue'
+  import Logo from './modules/logo.vue';
+  import {apiURL} from './settings.js';
 
   export default {
     replace: false,
 
     name: 'authentication',
 
+    components: {
+      Logo
+    },
+
     data() {
       return {
-        login: {
+        loginData: {
           username: '',
-          password: ''
+          password: '',
         }
       }
     },
 
     methods: {
-      attemptLogin: () => {
+      attemptLogin() {
+        this.$http.post(`${apiURL}/login`, this.loginData)
+        .then((response) => {
+          // do stuff
+        }, () => {
+          return 'Login failed';
+        });
+
       }
     },
-
-    components: {
-      Logo
-    }
   }
 </script>

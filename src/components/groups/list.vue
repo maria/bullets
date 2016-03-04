@@ -41,8 +41,7 @@
         this.$http.get(`${apiURL}/groups`)
         .then((response) => {
           this.gridData = response.data;
-        })
-        .catch(() => {
+        }, () => {
           return 'Fetch failed';
         });
       }
