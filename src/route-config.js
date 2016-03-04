@@ -1,9 +1,15 @@
 export function configRouter (router) {
   router.redirect({
-    '/': '/groups'
+    // Redirect any non-valid page to /groups
+    '*': '/groups'
   })
 
   router.map({
+    '/login': {
+      name: 'login',
+      component: require('./login.vue')
+    },
+
     '/about': {
       name: 'about',
       component: require('./components/about.vue')

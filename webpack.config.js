@@ -20,5 +20,13 @@ module.exports = {
       { test: /\.css$/, loader: 'style-loader!css-loader' }
     ]
   },
-  devtool: '#source-map'
+  devtool: '#source-map',
+  devServer: {
+    port: 8080,
+    colors: true,
+    // This is required for vue-router's 'history: true' to work
+    historyApiFallback: {
+      index: 'index.html',
+    },
+  },
 }

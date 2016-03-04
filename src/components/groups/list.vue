@@ -5,19 +5,21 @@
       <input name="query" v-model="searchQuery" class="form-control" placeholder="Search for a group">
     </div>
   </form>
-  <listingtable
+  <listing-table
     :data="gridData"
     :columns="gridColumns"
     :filter-key="searchQuery">
-  </listingtable>
+  </listing-table>
 </template>
 
 <script>
-  const apiURL = '';
+  const apiURL = 'http://10.11.0.40:5000';
 
-  import listingtable from '../../modules/listing-table.vue'
+  import ListingTable from '../../modules/listing-table.vue'
 
   export default {
+    name: 'groups-list',
+
     data() {
       return {
         groups: null,
@@ -32,12 +34,12 @@
     },
 
     components: {
-      listingtable
+      ListingTable
     },
 
     methods: {
       fetchData: function() {
-        this.$http.get('http://192.168.1.11:5000/groups/').then(
+        this.$http.get(`${apiURL}/groups/`).then(
           function (response) {
             this.gridData = response.data;
           }, function (response) {

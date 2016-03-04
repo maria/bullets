@@ -22,10 +22,13 @@
 </template>
 
 <script>
-  import logo from './modules/logo.vue'
+  import Logo from './modules/logo.vue'
 
   export default {
     replace: false,
+
+    name: 'authentication',
+
     data() {
       return {
         login: {
@@ -41,7 +44,7 @@
     },
 
     components: {
-      logo
+      Logo
     }
   }
 </script>

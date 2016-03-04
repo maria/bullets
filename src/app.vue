@@ -12,12 +12,15 @@
 </template>
 
 <script>
-  import sidebar from './modules/sidebar.vue'
+  import Sidebar from './modules/sidebar.vue'
 
   export default {
     replace: false,
+
+    name: 'main',
+
     components: {
-      sidebar
+      Sidebar
     }
   }
 </script>
