@@ -1,8 +1,9 @@
 <template>
-  <h1 class="uMB-30">Your groups</h1>
+  <h1>Persons</h1>
+  <div id="demo">
   <form id="search">
     <div class="form-group">
-      <input name="query" v-model="searchQuery" class="form-control" placeholder="Search for a group">
+      <input name="query" v-model="searchQuery" class="form-control" placeholder="Search for a person">
     </div>
   </form>
   <listingtable
@@ -10,6 +11,7 @@
     :columns="gridColumns"
     :filter-key="searchQuery">
   </listingtable>
+</div>
 </template>
 
 <script>
@@ -19,15 +21,10 @@
   export default {
     data() {
       return {
-        group: null,
         searchQuery: '',
-        gridColumns: ['name', 'type'],
+        gridColumns: ['name', 'email', 'groups'],
         gridData: []
       }
-    },
-
-    created: function () {
-      this.fetchData()
     },
 
     components: {
@@ -36,13 +33,13 @@
 
     methods: {
       fetchData: function() {
-        this.$http.get(settings.apiURL + '/groups/' + groupId).then(
+        this.$http.get(settings.apiURL + '/person/').then(
           function (response) {
             this.gridData = response.data;
           }, function (response) {
             this.gridData = [];
         });
-      }
+    }
     }
   }
 </script>
