@@ -42,5 +42,3 @@ router.start(App, 'body')
 
 // just for debugging
 window.router = router
-
-Vue.use(require('vue-resource'));

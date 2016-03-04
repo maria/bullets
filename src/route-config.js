@@ -23,8 +23,8 @@ export function configRouter (router) {
     '/groups/:groupId': {
       component: require('./components/groups/item.vue'),
       subRoutes: {
-        // matches /groups/:groupId/people
-        'people': {
+        // matches /groups/:groupId/person
+        'person': {
           component: require('./components/groups/item-people.vue')
         },
         // matches /groups/:groupId/passwords
@@ -32,6 +32,10 @@ export function configRouter (router) {
           component: require('./components/groups/item-passwords.vue')
         }
       }
-    }
+    },
+    '/persons': {
+      name: 'persons',
+      component: require('./components/person/list.vue')
+    },
   })
 }

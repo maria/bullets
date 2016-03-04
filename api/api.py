@@ -184,11 +184,11 @@ def logout():
 
 
 api.add_resource(PersonResource, '/person/<person_id>')
-api.add_resource(PersonsResource, '/persons')
+api.add_resource(PersonsResource, '/persons/')
 api.add_resource(GroupResource, '/group/<group_id>')
-api.add_resource(GroupsResource, '/groups')
+api.add_resource(GroupsResource, '/groups/')
 api.add_resource(EntryResource, '/entry/<entry_id>')
-api.add_resource(EntriesResource, '/entries')
+api.add_resource(EntriesResource, '/entries/')
 
 if __name__ == '__main__':
     cors = CORS(app, resources={r"*": {"origins": "*"}})
