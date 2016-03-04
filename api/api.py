@@ -148,32 +148,24 @@ def index():
         return redirect('login')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        form = request.form
-        if 'username' not in form or 'password' not in form:
-            return make_response(('', 400, {}))
-        username = form['username']
-        password = form['password']
 
-        username = username.replace('@kalon.ro', '@ad.kalon.ro')
+    form = json.loads(request.data)
+    if 'username' not in form or 'password' not in form:
+        return make_response(('Invalid credentials fields', 400, {}))
+    username = form['username']
+    password = form['password']
 
-        try:
-            ldap_client = get_ldap_client()
-            ldap_client.bind_s(username, password)
-            session.pop('username', None)
-            session['username'] = username
-            return redirect('/')
-        except BaseException:
-            return make_response(('', 401, {}))
-    return '''
-        <form action="" method="post">
-            <p><input type=text name=username>
-            <p><input type=password name=password>
-            <p><input type=submit value=Login>
-        </form>
-    '''
+    try:
+        ldap_client = get_ldap_client()
+        ldap_client.bind_s(username, password)
+        session.pop('username', None)
+        session['username'] = username
+        return redirect('/')
+
+    except Exception as e:
+        return make_response(('Invalid credentials. Error: %s' % e, 401, {}))
 
 
 @app.route('/logout', methods=['DELETE'])
